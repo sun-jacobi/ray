@@ -1,8 +1,9 @@
 use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Div;
+use std::ops::Sub;
 
-
+#[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     x : f64,
     y : f64,
@@ -17,9 +18,9 @@ impl ToString for Vec3{
 }
 
 impl Add for Vec3 {
-    type Output = Self;
-    fn add(self, rhs : Self) -> Self {
-        Self {
+    type Output = Vec3;
+    fn add(self, rhs : Vec3) -> Self::Output {
+        Vec3 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
             z: self.z + rhs.z,
@@ -27,10 +28,22 @@ impl Add for Vec3 {
     }
 }
 
+impl Sub for Vec3 {
+    type Output = Vec3;
+    fn sub(self, rhs : Vec3) -> Self::Output {
+        Vec3 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
+
+
 impl Mul<f64> for Vec3 {
-    type Output = Self;
-    fn mul(self, rhs : f64) -> Self {
-        Self {
+    type Output = Vec3;
+    fn mul(self, rhs : f64) -> Self::Output {
+        Vec3 {
             x: self.x * rhs,
             y: self.y * rhs,
             z: self.z * rhs,
@@ -38,28 +51,28 @@ impl Mul<f64> for Vec3 {
     }
 }
 
+// the inner product　
+impl Mul<Vec3> for Vec3 {
+    type Output = f64;
+    fn mul(self, rhs : Vec3) -> Self::Output {
+            self.x * rhs.x + 
+            self.y * rhs.y + 
+            self.z * rhs.z
+    }
+}
 
-impl Mul<Self> for Vec3 {
-    type Output = Self;
-    fn mul(self, rhs : Self) -> Self {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-            z: self.z * rhs.z,
+
+impl Div<f64> for Vec3 {
+    type Output = Vec3;
+    fn div(self, rhs : f64) -> Self::Output {
+        Vec3 {
+            x: self.x / rhs,
+            y: self.y / rhs,
+            z: self.z / rhs,
         }
     }
 }
 
-impl Div for Vec3 {
-    type Output = Self;
-    fn div(self, rhs : Self) -> Self {
-        Self {
-            x: self.x / rhs.x,
-            y: self.y / rhs.y,
-            z: self.z / rhs.z,
-        }
-    }
-}
 
 
 
@@ -81,11 +94,15 @@ impl Vec3 {
     }// z component
     
     pub fn len(&self) -> f64 {
-        self.x * self.x + self.y * self.y + self.y * self.y 
+        self.x * self.x + self.y * self.y + self.z * self.z 
     } 
 
     pub fn norm(&self) -> f64 {
         self.len().sqrt()
+    }
+    
+    pub fn unit_vector(&self) -> Vec3 {
+        *self / self.norm()
     }
 }
 
